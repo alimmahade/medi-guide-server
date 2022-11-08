@@ -6,7 +6,7 @@ const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 const { query } = require("express");
 require("colors");
 const app = express();
@@ -36,6 +36,12 @@ async function run() {
       const cursor = myCollection.find(query);
       const services = await cursor.toArray();
       res.send(services);
+    });
+    app.get("/services/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const service = await myCollection.findOne(query);
+      res.send(service);
     });
   } catch (error) {
     console.log(error.name.bgRed, error.message.bold, error.stack.yellow);
