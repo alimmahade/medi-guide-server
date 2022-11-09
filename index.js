@@ -26,20 +26,28 @@ async function run() {
     const myCollection = client
       .db("as-11-db-name")
       .collection("collection-n-as-11");
+
     // myCollection.insertOne({ name: "Burgeer" });
+
     // ----------------------------------
+
+    // limit data loaded
     app.get("/", async (req, res) => {
       const query = {};
       const cursor = myCollection.find(query).limit(3);
       const services = await cursor.toArray();
       res.send(services);
     });
+
+    // All service Data loaded
     app.get("/services", async (req, res) => {
       const query = {};
       const cursor = myCollection.find(query);
       const services = await cursor.toArray();
       res.send(services);
     });
+
+    // one spacific service
     app.get("/services/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
