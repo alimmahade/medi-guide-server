@@ -18,9 +18,6 @@ app.use(express.json());
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.0vavtsh.mongodb.net/?retryWrites=true&w=majority`;
 // console.log(uri);
 const client = new MongoClient(uri);
-app.get("/", (req, res) => {
-  res.send("My server is Running");
-});
 async function run() {
   try {
     await client.connect();
@@ -31,6 +28,12 @@ async function run() {
       .collection("collection-n-as-11");
     // myCollection.insertOne({ name: "Burgeer" });
     // ----------------------------------
+    app.get("/", async (req, res) => {
+      const query = {};
+      const cursor = myCollection.find(query).limit(3);
+      const services = await cursor.toArray();
+      res.send(services);
+    });
     app.get("/services", async (req, res) => {
       const query = {};
       const cursor = myCollection.find(query);
