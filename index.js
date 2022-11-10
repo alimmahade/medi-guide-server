@@ -21,13 +21,19 @@ async function run() {
     const myCollection = client
       .db("as-11-db-name")
       .collection("collection-n-as-11");
-    // app.post("/addservice", async (req, res) => {
-    //   const service = req.body;
-    //   // console.log(req.body);
-    //   const result = await myCollection.insertOne(service);
-    //   console.log(result);
-    //   res.send(result);
-    // });
+    app.post("/addservice", async (req, res) => {
+      const service = req.body;
+      // console.log(req.body);
+      const result = await myCollection.insertOne(service);
+      console.log(result);
+      res.send(result);
+    });
+    app.get("/allservices", async (req, res) => {
+      const query = {};
+      const cursor = myCollection.find(query);
+      const services = await cursor.toArray();
+      res.send(services);
+    });
 
     // limit data loaded
     app.get("/", async (req, res) => {
