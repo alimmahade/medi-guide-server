@@ -1,13 +1,9 @@
-// un: as-11-db-username
-// pas: 4o1QxMIcvezaGpjc
-// DB_USER=as-11-db-username
-// DB_PASSWORD=4o1QxMIcvezaGpjc
 const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { MongoClient, ObjectId } = require("mongodb");
-const { query } = require("express");
+// const { query } = require("express");
 require("colors");
 const app = express();
 const port = process.env.PORT || 5000;
@@ -22,14 +18,20 @@ async function run() {
   try {
     await client.connect();
     console.log("database connected".yellow.italic);
-    // ----------------------
-    const myCollection = client
-      .db("as-11-db-name")
-      .collection("collection-n-as-11");
-
-    // myCollection.insertOne({ name: "Burgeer" });
-
-    // ----------------------------------
+    const myCollection = client.db("as-11-db-name").collection("addservice");
+    app.post("/addservice", async (req, res) => {
+      const service = req.body;
+      // console.log(req.body);
+      const result = await myCollection.insertOne(service);
+      console.log(result);
+      res.send(result);
+    });
+    app.get("/addservice", async (req, res) => {
+      const query = {};
+      const cursor = addservice.find(query);
+      const addservices = await cursor.toArray();
+      res.send(addservices);
+    });
 
     // limit data loaded
     app.get("/", async (req, res) => {
@@ -54,8 +56,15 @@ async function run() {
       const service = await myCollection.findOne(query);
       res.send(service);
     });
-  } catch (error) {
-    console.log(error.name.bgRed, error.message.bold, error.stack.yellow);
+
+    // app.post("/serviceusers", (req, res) => {
+    //   console.log("post api call");
+    //   // console.log(req.body);
+
+    //   serviceUsers.push(serviceUser);
+    //   console.log(...serviceUsers);
+    // });
+  } finally {
   }
 }
 run();
