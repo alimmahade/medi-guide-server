@@ -18,20 +18,16 @@ async function run() {
   try {
     await client.connect();
     console.log("database connected".yellow.italic);
-    const myCollection = client.db("as-11-db-name").collection("addservice");
-    app.post("/addservice", async (req, res) => {
-      const service = req.body;
-      // console.log(req.body);
-      const result = await myCollection.insertOne(service);
-      console.log(result);
-      res.send(result);
-    });
-    app.get("/addservice", async (req, res) => {
-      const query = {};
-      const cursor = addservice.find(query);
-      const addservices = await cursor.toArray();
-      res.send(addservices);
-    });
+    const myCollection = client
+      .db("as-11-db-name")
+      .collection("collection-n-as-11");
+    // app.post("/addservice", async (req, res) => {
+    //   const service = req.body;
+    //   // console.log(req.body);
+    //   const result = await myCollection.insertOne(service);
+    //   console.log(result);
+    //   res.send(result);
+    // });
 
     // limit data loaded
     app.get("/", async (req, res) => {
@@ -56,14 +52,6 @@ async function run() {
       const service = await myCollection.findOne(query);
       res.send(service);
     });
-
-    // app.post("/serviceusers", (req, res) => {
-    //   console.log("post api call");
-    //   // console.log(req.body);
-
-    //   serviceUsers.push(serviceUser);
-    //   console.log(...serviceUsers);
-    // });
   } finally {
   }
 }
