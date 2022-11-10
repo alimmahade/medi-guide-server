@@ -62,4 +62,5 @@ async function run() {
   }
 }
 run();
+// function call ensure
 app.listen(5000, () => console.log("server is up and running".cyan.bold));
