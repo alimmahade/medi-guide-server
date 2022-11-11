@@ -1,8 +1,9 @@
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const { MongoClient, ObjectId } = require("mongodb");
+
 // const { query } = require("express");
 require("colors");
 const app = express();
@@ -11,16 +12,26 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.0vavtsh.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://as-11-db-username:4o1QxMIcvezaGpjc@cluster0.0vavtsh.mongodb.net/?retryWrites=true&w=majority`;
 // console.log(uri);
-const client = new MongoClient(uri);
+const client = new MongoClient(
+  uri,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverApi: ServerApiVersion.v1,
+  },
+  { connectTimeoutMS: 30000 },
+  { keepAlive: 1 }
+);
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
     console.log("database connected".yellow.italic);
     const myCollection = client
       .db("as-11-db-name")
       .collection("collection-n-as-11");
+    const myReview = client.db("serviceReview").collection("review");
     app.post("/addservice", async (req, res) => {
       const service = req.body;
       // console.log(req.body);
@@ -28,6 +39,7 @@ async function run() {
       console.log(result);
       res.send(result);
     });
+
     app.get("/allservices", async (req, res) => {
       const query = {};
       const cursor = myCollection.find(query);
@@ -49,6 +61,19 @@ async function run() {
       const cursor = myCollection.find(query);
       const services = await cursor.toArray();
       res.send(services);
+    });
+    // user review
+    app.post("/review", async (req, res) => {
+      const userReview = req.body;
+      console.log(userReview);
+      const result = await myReview.insertOne(userReview);
+      console.log(result);
+    });
+    app.get("/review", async (req, res) => {
+      const query = {};
+      const cursor = myReview.find(query);
+      const review = await cursor.toArray();
+      res.send(review);
     });
 
     // one spacific service
